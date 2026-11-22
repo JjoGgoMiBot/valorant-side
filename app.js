@@ -150,7 +150,7 @@
     const r = hex(3), seed = hex(16);
     ls.set('vs_adm_' + r, seed);
     pendingCreate = { seed, pool, teamA, teamB, opts };
-    if (hostKey) { history.replaceState(null, '', location.pathname); hostMode = true; myCap = null; join(r); startFollow(); } // 기본 주소로 돌아가 최신 방(=내 방) 따라감
+    if (hostKey && hostMode) { history.replaceState(null, '', location.pathname); myCap = null; join(r); startFollow(); }
     else location.hash = 'room=' + r;
   }
   // 방 설정(meta): 관리자 시드에서 팀장 해시·관리자 해시를 만들어 넣음
@@ -285,6 +285,12 @@
   function enter() {
     const { r, cap, hk, hostQ, adm: admQ, team } = parseHash();
     $('hostNewBtn').classList.toggle('hidden', !hostKey);
+    if (location.hash === '#create') {
+      hostMode = false; stopFollow(); myCap = null;
+      room = null; if (client) { try { client.end(true); } catch {} client = null; }
+      $('lobby').classList.remove('hidden'); $('room').classList.add('hidden');
+      return;
+    }
     if (hk) { // 호스트 링크: 키 확인 후 주소창에서 키만 지움 (#host 로 남겨서 방 만들기 화면)
       history.replaceState(null, '', location.pathname + '#host');
       loadHostKey(hk).then(k => { if (k) { hostKey = k; ls.set('vs_hostkey', hk); } else alert('호스트 링크가 올바르지 않아요'); enter(); });
@@ -354,7 +360,7 @@
         const p = pendingCreate; pendingCreate = null;
         pub('meta', await metaFor(p.seed, 0, p.opts || {}, p.pool));
         pub('round', { id: hex(4), n: 1, teamA: p.teamA, teamB: p.teamB });
-        if (hostKey) { const r0 = room; liveSigned(r0).then(m => { if (client === c) c.publish(LIVE_T, m, { qos: 1, retain: true }); }); }
+        if (hostKey && hostMode) { const r0 = room; liveSigned(r0).then(m => { if (client === c && hostMode) c.publish(LIVE_T, m, { qos: 1, retain: true }); }); }
       }
     });
     c.on('reconnect', () => setConn('다시 연결 중…', true));
