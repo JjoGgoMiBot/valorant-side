@@ -1151,6 +1151,7 @@
     else if (myTeam) role = `${myTeam.side}팀원 · 팀 채팅 가능`;
     else role = followOn ? '📌 최신 방 자동 관전 중' : '👀 관전 중';
     $('myRole').textContent = role;
+    $('globalViewLink').classList.toggle('hidden', !hostMode);
     $('admProg').classList.toggle('hidden', !isAdmin());
     if (isAdmin()) {
       $('admUndo').disabled = !(ban && S.veto.length);
