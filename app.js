@@ -248,7 +248,7 @@
       adm: /^[0-9a-f]{32}$/.test(p.get('adm') || '') ? p.get('adm') : null, team: /^[AB]-[0-9a-f]{24}$/.test(p.get('team') || '') ? p.get('team') : null };
   }
   // 공유 링크는 항상 공개 주소(GitHub Pages) 기준 · 로컬에서 열어도 친구가 열 수 있게
-  const PUBLIC = 'https://seungjaehh.github.io/valorant-side/';
+  const PUBLIC = 'https://jjoggomibot.github.io/valorant-side/';
   const siteBase = () => /^https?:$/.test(location.protocol) && !/^(localhost|127\.|\[::1\]|0\.0\.0\.0)/.test(location.hostname) ? location.origin + location.pathname : PUBLIC;
   function linkFor(kind) {
     const u = siteBase() + '#room=' + room;
@@ -1143,7 +1143,7 @@
     else if (isAdmin()) role = '🛠️ 관리자 · 팀장이 없으면 대신 진행할 수 있어요';
     else if (adm && !adm.ok) role = '⚠️ 관리자 코드 불일치 · 관전 모드';
     else if (myTeam) role = `${myTeam.side}팀원 · 팀 채팅 가능`;
-    else role = followGroup ? '📌 최신 방 자동 관전 중' : '👀 관전 중';
+    else role = followOn ? '📌 최신 방 자동 관전 중' : '👀 관전 중';
     $('myRole').textContent = role;
     $('admProg').classList.toggle('hidden', !isAdmin());
     if (isAdmin()) {
